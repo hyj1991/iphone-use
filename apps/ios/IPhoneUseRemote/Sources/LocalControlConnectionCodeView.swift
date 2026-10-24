@@ -93,7 +93,7 @@ struct LocalControlConnectionCodeView: View {
         } catch { self.error = "暂时无法生成连接码，请确认本机控制已启用。" }
     }
 
-    private static func wifiAddress() -> String? {
+    static func wifiAddress() -> String? {
         var list: UnsafeMutablePointer<ifaddrs>?
         guard getifaddrs(&list) == 0, let first = list else { return nil }
         defer { freeifaddrs(list) }

@@ -9,6 +9,7 @@ struct LocalControlSetupView: View {
     @State private var busy = false
     @State private var message: String?
     @State private var connectionCode = false
+    @State private var computerConnection = false
 
     private var completePackage: Bool {
         Bundle.main.object(forInfoDictionaryKey: "IPUSingleAppControl") as? Bool == true
@@ -78,6 +79,8 @@ struct LocalControlSetupView: View {
                 }.disabled(busy || tunnel.state == "未启用")
                 Button("让其他设备连接") { connectionCode = true }
                     .disabled(tunnel.nativePhase != "running")
+                Button("连接 TRAE 电脑") { computerConnection = true }
+                    .disabled(tunnel.nativePhase != "running")
                 if busy { ProgressView("正在设置") }
                 if let message { Text(message).foregroundStyle(.secondary) }
                 if !completePackage { Text("此版本尚未包含完整的本机控制组件。") }
@@ -116,6 +119,7 @@ struct LocalControlSetupView: View {
         }
         .navigationTitle("本机控制")
         .sheet(isPresented: $connectionCode) { LocalControlConnectionCodeView() }
+        .sheet(isPresented: $computerConnection) { LocalControlComputerConnectionView() }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.data]) { result in
             do {
                 let url = try result.get()
